@@ -11,24 +11,24 @@ const OJK_RATE = {
                 max: 200000000,
                 w1: 2.67,
                 w2: 2.47,
-                w3: 2.10
+                w3: 2.69
             },
             {
                 max: 400000000,
                 w1: 2.18,
                 w2: 2.08,
-                w3: 1.42
+                w3: 1.79
             },
             {
                 max: 800000000,
                 w1: 1.20,
                 w2: 1.20,
-                w3: 1.20
+                w3: 1.14
             },
             {
                 max: 99999999999,
                 w1: 1.05,
-                w2: 1.16,
+                w2: 1.05,
                 w3: 1.05
             }
         ],
@@ -66,19 +66,19 @@ const OJK_RATE = {
                 max: 200000000,
                 w1: 0.63,
                 w2: 0.44,
-                w3: 0.40
+                w3: 0.44
             },
             {
                 max: 400000000,
                 w1: 0.41,
                 w2: 0.38,
-                w3: 0.36
+                w3: 0.29
             },
             {
                 max: 800000000,
                 w1: 0.25,
                 w2: 0.25,
-                w3: 0.25
+                w3: 0.23
             },
             {
                 max: 99999999999,
@@ -90,20 +90,129 @@ const OJK_RATE = {
         "Truck": [{
             max: 99999999999,
             w1: 0.88,
-            w2: 1.02,
+            w2: 1.68,
             w3: 0.81
         }],
         "Bus": [{
             max: 99999999999,
             w1: 0.23,
-            w2: 0.29,
+            w2: 0.23,
             w3: 0.18
         }],
         "Roda 2": [{
             max: 99999999999,
             w1: 1.76,
             w2: 1.80,
-            w3: 1.67
+            w3: 0.67
+        }]
+    }
+};
+
+const EV_RATE = {
+    COMPREHENSIVE: {
+        "Non Truck": [{
+                max: 125000000,
+                w1: 4.20,
+                w2: 3.59,
+                w3: 2.78
+            },
+            {
+                max: 200000000,
+                w1: 2.94,
+                w2: 2.72,
+                w3: 2.96
+            },
+            {
+                max: 400000000,
+                w1: 2.40,
+                w2: 2.29,
+                w3: 1.97
+            },
+            {
+                max: 800000000,
+                w1: 1.32,
+                w2: 1.32,
+                w3: 1.25
+            },
+            {
+                max: 99999999999,
+                w1: 1.16,
+                w2: 1.16,
+                w3: 1.16
+            }
+        ],
+        "Truck": [{
+                max: 99999999999,
+                w1: 2.67,
+                w2: 2.63,
+                w3: 2.46
+            } // kategori 6
+        ],
+        "Bus": [{
+                max: 99999999999,
+                w1: 1.14,
+                w2: 1.14,
+                w3: 0.97
+            } // kategori 7
+        ],
+        "Roda 2": [{
+                max: 99999999999,
+                w1: 3.50,
+                w2: 3.50,
+                w3: 3.50
+            } // kategori 8
+        ]
+    },
+
+    TLO: {
+        "Non Truck": [{
+                max: 125000000,
+                w1: 0.56,
+                w2: 0.78,
+                w3: 0.56
+            },
+            {
+                max: 200000000,
+                w1: 0.69,
+                w2: 0.53,
+                w3: 0.48
+            },
+            {
+                max: 400000000,
+                w1: 0.46,
+                w2: 0.42,
+                w3: 0.35
+            },
+            {
+                max: 800000000,
+                w1: 0.30,
+                w2: 0.30,
+                w3: 0.27
+            },
+            {
+                max: 99999999999,
+                w1: 0.24,
+                w2: 0.24,
+                w3: 0.24
+            }
+        ],
+        "Truck": [{
+            max: 99999999999,
+            w1: 1.07,
+            w2: 2.02,
+            w3: 0.98
+        }],
+        "Bus": [{
+            max: 99999999999,
+            w1: 0.29,
+            w2: 0.29,
+            w3: 0.22
+        }],
+        "Roda 2": [{
+            max: 99999999999,
+            w1: 2.11,
+            w2: 2.16,
+            w3: 0.80
         }]
     }
 };
@@ -111,7 +220,9 @@ const OJK_RATE = {
 let isGenerated = false;
 
 function getOJKRate(type, jenis, wilayah, harga) {
-    const list = OJK_RATE[type][jenis];
+    const isEV = document.getElementById("isEV").checked;
+    const rateTable = isEV ? EV_RATE : OJK_RATE;
+    const list = rateTable[type][jenis];
 
     for (let i of list) {
         if (harga <= i.max) {
@@ -141,8 +252,6 @@ function generateQuote() {
     const wilayah = parseInt(document.getElementById("wilayah").value);
     const tpl = parseInt(document.getElementById("tpl").value || 0);
     const authorizedValue = document.querySelector('input[name="authorized"]:checked').value;
-    const isEV = document.getElementById("isEV").checked;
-    console.log({authorizedValue, isEV});
     const diskon = parseInt(document.getElementById("diskon").value || 0);
     const opsi = document.getElementById("opsi").value;
     const harga = parseInt(document.getElementById("harga").value || 0);
