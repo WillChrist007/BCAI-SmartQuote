@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BCAI SmartQuote</title>
+
+    <!-- BOOTSTRAP 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f3f6f9;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .btn-bcai {
+            background-color: #005a8d;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+
+        .btn-bcai:hover {
+            background-color: #003e5d;
+        }
+
+        .title-line {
+            border-left: 4px solid #005a8d;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-4">
+
+        <div class="card shadow p-4">
+            <h3 class="title-line mb-4">BCA Insurance – SmartQuote</h3>
+
+            <!-- FORM INPUT -->
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label">Nama Tertanggung</label>
+                    <input id="tertanggung" type="text" class="form-control" placeholder="Masukkan nama tertanggung">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Nama Kendaraan</label>
+                    <input id="namaKendaraan" type="text" class="form-control" placeholder="Contoh: Avanza 1.5 G">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Tahun Kendaraan</label>
+                    <input id="tahun" type="number" class="form-control" placeholder="Contoh: 2020">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Jenis Kendaraan</label>
+                    <select id="jenisKendaraan" class="form-select">
+                        <option value="Non Truck">Non Truck</option>
+                        <option value="Truck">Truck</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Roda 2">Roda 2</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Wilayah</label>
+                    <select id="wilayah" class="form-select">
+                        <option value="1">Wilayah 1</option>
+                        <option value="2">Wilayah 2</option>
+                        <option value="3">Wilayah 3</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">TPL</label>
+                    <input id="tpl" type="number" class="form-control" placeholder="Masukkan limit TPL" min="0">
+                </div>
+
+                <!-- NEW RADIO BUTTON AUTHORIZED -->
+                <div class="col-md-4">
+                    <label class="form-label">Authorized / Bengkel Resmi</label>
+                    <div class="d-flex gap-3 mt-2">
+                        <div>
+                            <input type="radio" name="authorized" id="authYes" value="Yes" checked>
+                            <label for="authYes">Yes</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="authorized" id="authNo" value="No">
+                            <label for="authNo">No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW CHECKBOX EV -->
+                <div class="col-md-4">
+                    <label class="form-label">Mobil EV (Electric Vehicle)</label>
+                    <div class="mt-2">
+                        <input type="checkbox" id="isEV">
+                        <label for="isEV">Ya, ini kendaraan listrik</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Diskon (%)</label>
+                    <input id="diskon" type="number" class="form-control" placeholder="0 - 25%" max="25" min="0">
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label">Opsi Layout</label>
+                    <select id="opsi" class="form-select">
+                        <option value="1">Comprehensive + Perluasan + TPL, Comprehensive + TPL</option>
+                        <option value="2">Comprehensive + Perluasan + TPL, Comprehensive + TPL, TLO + TPL</option>
+                        <option value="3">TLO + TPL</option>
+                    </select>
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Harga Kendaraan (OTR)</label>
+                    <input id="harga" type="number" class="form-control" placeholder="Contoh: 250000000" min="0">
+                </div>
+
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="mt-4 d-flex gap-2">
+                <button class="btn btn-bcai" onclick="generateQuote()">Generate Penawaran</button>
+                <button class="btn btn-secondary" onclick="savePDF()">Save as PDF</button>
+            </div>
+        </div>
+
+        <!-- OUTPUT -->
+        <div id="result" class="card shadow p-4 mt-4"></div>
+
+    </div>
+
+    <!-- MODAL VALIDASI -->
+    <div class="modal fade" id="modalValidasi" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Data Belum Lengkap</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Mohon lengkapi semua data sebelum menghasilkan estimasi premi.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Mengerti</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BELUM GENERATE -->
+    <div class="modal fade" id="modalBelumGenerate" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">Belum Generate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Silakan generate penawaran terlebih dahulu sebelum menyimpan PDF.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Mengerti</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
