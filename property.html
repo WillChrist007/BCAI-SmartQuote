@@ -94,14 +94,14 @@
 
                     <!-- MENU MV -->
                     <li class="nav-item">
-                        <a class="nav-active nav-link text-white px-3" href="index.html" id="menuMV">
+                        <a class="nav-link text-white px-3" href="index.html" id="menuMV">
                             Motor Vehicle (MV)
                         </a>
                     </li>
 
                     <!-- MENU PROPERTY -->
                     <li class="nav-item">
-                        <a class="nav-link text-white px-3" href="property.html" id="menuProperty">
+                        <a class="nav-active nav-link text-white px-3" href="property.html" id="menuProperty">
                             Property
                         </a>
                     </li>
@@ -112,89 +112,77 @@
         </div>
     </nav>
     <div class="container py-4">
+
         <div class="card shadow p-4">
             <!-- FORM INPUT -->
             <div class="row g-3">
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Nama Tertanggung</label>
                     <input id="tertanggung" type="text" class="form-control" placeholder="Masukkan nama tertanggung">
                 </div>
 
+                <div class="col-md-4">
+                    <label class="form-label">Alamat</label>
+                    <input id="alamat" type="text" class="form-control" placeholder="Masukkan alamat pertanggungan">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Jenis Okupasi</label>
+                    <select id="jenisOkupasi" class="form-select">
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Nilai Bangunan</label>
+                    <input id="nilaiBangunan" type="number" class="form-control" placeholder="Masukkan nilai bangunan"
+                        min="0">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Nilai Content</label>
+                    <input id="nilaiContent" type="number" class="form-control" placeholder="Masukkan nilai content"
+                        min="0">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Nilai Stock</label>
+                    <input id="nilaiStock" type="number" class="form-control" placeholder="Masukkan nilai stock"
+                        min="0">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Nilai Mesin</label>
+                    <input id="nilaiMesin" type="number" class="form-control" placeholder="Masukkan nilai mesin"
+                        min="0">
+                </div>
+
                 <div class="col-md-6">
-                    <label class="form-label">Nama Kendaraan</label>
-                    <input id="namaKendaraan" type="text" class="form-control" placeholder="Contoh: Avanza 1.5 G">
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Tahun Kendaraan</label>
-                    <input id="tahun" type="number" class="form-control" placeholder="Contoh: 2020">
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Jenis Kendaraan</label>
-                    <select id="jenisKendaraan" class="form-select">
-                        <option value="Non Truck">Non Truck</option>
-                        <option value="Truck">Truck</option>
-                        <option value="Bus">Bus</option>
-                        <option value="Roda 2">Roda 2</option>
+                    <label class="form-label">Kelas Konstruksi</label>
+                    <select id="kelasKonstruksi" class="form-select">
+                        <option value="1">Konstruksi 1</option>
+                        <option value="2">Konstruksi 2</option>
+                        <option value="3">Konstruksi 3</option>
                     </select>
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label">Wilayah</label>
-                    <select id="wilayah" class="form-select">
-                        <option value="1">Wilayah 1</option>
-                        <option value="2">Wilayah 2</option>
-                        <option value="3">Wilayah 3</option>
-                    </select>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">TPL</label>
-                    <input id="tpl" type="number" class="form-control" placeholder="Masukkan limit TPL" min="0">
-                </div>
-
-                <!-- NEW RADIO BUTTON AUTHORIZED -->
-                <div class="col-md-4">
-                    <label class="form-label">Authorized / Bengkel Resmi</label>
-                    <div class="d-flex gap-3 mt-2">
-                        <div>
-                            <input type="radio" name="authorized" id="authYes" value="Yes" checked>
-                            <label for="authYes">Yes</label>
-                        </div>
-                        <div>
-                            <input type="radio" name="authorized" id="authNo" value="No">
-                            <label for="authNo">No</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- NEW CHECKBOX EV -->
-                <div class="col-md-4">
-                    <label class="form-label">Mobil EV (Electric Vehicle)</label>
-                    <div class="mt-2">
-                        <input type="checkbox" id="isEV">
-                        <label for="isEV">Ya, ini kendaraan listrik</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="form-label">Diskon (%)</label>
-                    <input id="diskon" type="number" class="form-control" placeholder="0 - 25%" max="25" min="0">
-                </div>
-
-                <div class="col-md-8">
-                    <label class="form-label">Opsi Layout</label>
-                    <select id="opsi" class="form-select">
-                        <option value="1">Comprehensive + Perluasan + TPL, Comprehensive + TPL</option>
-                        <option value="2">Comprehensive + Perluasan + TPL, Comprehensive + TPL, TLO + TPL</option>
-                        <option value="3">TLO + TPL</option>
-                    </select>
+                    <input id="diskon" type="number" class="form-control" placeholder="0 - 15%" max="15" min="0">
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">Harga Kendaraan (OTR)</label>
-                    <input id="harga" type="number" class="form-control" placeholder="Contoh: 250000000" min="0">
+                    <label class="form-label">Total Pertanggungan</label>
+                    <input disabled id="totalPertanggungan" type="number" class="form-control"
+                        placeholder="Total pertanggungan akan terhitung otomatis" readonly>
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Opsi Layout</label>
+                    <select id="opsi" class="form-select">
+                        <option value="1">PAR, PAR (Exc. TSFWD), PAR + EQVET</option>
+                        <option value="2">FLEXAS, PAR, PAR (Exc. TSFWD), PAR + EQVET</option>
+                    </select>
                 </div>
 
             </div>
@@ -261,7 +249,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="script.js"></script>
+    <script src="scriptProperty.js"></script>
 
     <script>
         // AUTO ACTIVE MENU BERDASARKAN HALAMAN

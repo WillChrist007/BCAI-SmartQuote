@@ -323,12 +323,14 @@ function generateQuote() {
             `;
         }
 
+        let info ='';
 
         // PERLUASAN
         if (perluasan) {
             PERLUASAN.forEach(p => {
                 const val = harga * p.rate;
                 total += val;
+                info = ' + Perluasan';
 
                 rows += `
                 <tr><td>${p.name}</td>
@@ -347,12 +349,22 @@ function generateQuote() {
 
         // BENGKEL RESMI
         if (authorizedValue === "Yes") {
-            let authorizedVal = harga * 0.002;
+            let rateAuthorized = 0.0;
+
+            // jika isEV, tarifnya 0.0%
+            if (document.getElementById("isEV").checked) {
+                rateAuthorized = 1.0;
+            } else {
+                rateAuthorized = 0.2;
+            }
+
+            let authorizedVal = harga * (rateAuthorized / 100);
             total += authorizedVal;
+
             rows += `
             <tr><td>Bengkel Resmi</td>
             <td>Rp ${harga.toLocaleString()}</td>
-            <td>x 0.2%</td>
+            <td>x ${(rateAuthorized).toFixed(2)}%</td>
             <td>Rp ${authorizedVal.toLocaleString()}</td></tr>`;
         }
 
@@ -378,7 +390,7 @@ function generateQuote() {
             `;
         }
 
-        return `<h3>Opsi: Comprehensive</h3><table>${rows}</table>`;
+        return `<h3>Opsi: Comprehensive ${info}</h3><table>${rows}</table>`;
     }
 
     function generateTLOTable() {
