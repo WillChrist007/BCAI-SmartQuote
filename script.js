@@ -425,6 +425,9 @@ function generateQuote() {
     }
 
     function generateNote() {
+        // Get TPL
+        const tpl = parseInt(document.getElementById("tpl").value || 0);
+
         return `
         <h3>Catatan Penting</h3>
         <div style="font-size:14px; line-height:1.5; margin-top:10px">
@@ -439,7 +442,7 @@ function generateQuote() {
                 <li><b>RSCCTS</b> (Riots, Strike, Civil Commotion, Terrorism & Sabotage): Kerusuhan, pemogokan, huru-hara, terorisme, dan sabotase.</li>
                 <li><b>EQVET</b> (Earth Quake, Volcanic Eruption, Tsunami): Gempa bumi, letusan gunung berapi, dan tsunami.</li>
                 <li><b>TPL</b> (Third Party Liability): Tanggung jawab hukum kepada pihak ketiga, 
-                    <br>contoh jika ada pihak yang dirugikan dan menuntut, dijamin maksimal <b>Rp 20.000.000</b>.
+                    <br>contoh jika ada pihak yang dirugikan dan menuntut, dijamin maksimal <b>Rp ${tpl.toLocaleString()}</b>.
                 </li>
             </ul>
 
@@ -497,7 +500,7 @@ async function savePDF() {
     const imgData = canvas.toDataURL("image/png");
 
     // Buat ukuran PDF A4
-    const pdf = new jsPDF("p", "pt", "a4");
+    const pdf = new jsPDF("p", "pt", "a4", true);
 
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
@@ -521,5 +524,6 @@ async function savePDF() {
         heightLeft -= pageHeight;
     }
 
-    pdf.save("SmartQuote.pdf");
+    const tertanggung = document.getElementById("tertanggung").value || "Penawaran";
+    pdf.save(`SmartQuote_${tertanggung.replace(/\s/g, '_')}.pdf`);
 }

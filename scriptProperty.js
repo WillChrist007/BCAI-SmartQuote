@@ -380,7 +380,7 @@ async function savePDF() {
     });
 
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p", "pt", "a4");
+    const pdf = new jsPDF("p", "pt", "a4", true);
 
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
