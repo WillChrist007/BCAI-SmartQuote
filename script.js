@@ -267,9 +267,10 @@ function generateQuote() {
     let html = `
         <img src="logo.png" alt="BCA Insurance" style="width:300px; margin-bottom:20px;">
         <h3>Estimasi Premi Kendaraan Bermotor</h3>
-        <b>Nama:</b> ${tertanggung}<br>
-        <b>Tipe Kendaraan:</b> ${kendaraan} (${tahun})<br>
-        <b>Harga OTR:</b> Rp ${harga.toLocaleString()}<br><br>
+
+        <span><b>Nama:</b> ${tertanggung}</span><br>
+        <span><b>Tipe Kendaraan:</b> ${kendaraan} (${tahun})</span><br>
+        <span><b>Harga OTR:</b> Rp ${harga.toLocaleString()}</span><br>
     `;
 
     // Ambil rate OJK yang benar

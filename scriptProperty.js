@@ -279,17 +279,19 @@ function generateQuote() {
     let html = `
         <img src="logo.png" alt="BCA Insurance" style="width:300px; margin-bottom:20px;">
         <h3>Estimasi Premi Properti</h3>
-        <b>Nama Tertanggung:</b> ${tertanggung}<br>
-        <b>Alamat Pertanggungan:</b> ${alamat}<br>
-        <b>Jenis Okupasi:</b> ${okupasiText} (Kode: ${okupasiCode})<br>
-        <b>Konstruksi:</b> Konstruksi ${konstruksi}<br>        
-        <b>Nilai Bangunan:</b> ${formatRupiah(nilaiBangunan)}<br>
-        <b>Nilai Content:</b> ${formatRupiah(nilaiContent)}<br>
-        <b>Nilai Stock:</b> ${formatRupiah(nilaiStock)}<br>
-        <b>Nilai Mesin:</b> ${formatRupiah(nilaiMesin)}<br>
-        <b>Total Pertanggungan:</b> ${formatRupiah(totalPertanggungan)}<br>
+
+        <span><b>Nama Tertanggung:</b> ${tertanggung}</span><br>
+        <span><b>Alamat Pertanggungan:</b> ${alamat}</span><br>
+        <span><b>Jenis Okupasi:</b> ${okupasiText} (Kode: ${okupasiCode})</span><br>
+        <span><b>Konstruksi:</b> Konstruksi ${konstruksi}</span><br>
+        <span><b>Nilai Bangunan:</b> ${formatRupiah(nilaiBangunan)}</span><br>
+        <span><b>Nilai Content:</b> ${formatRupiah(nilaiContent)}</span><br>
+        <span><b>Nilai Stock:</b> ${formatRupiah(nilaiStock)}</span><br>
+        <span><b>Nilai Mesin:</b> ${formatRupiah(nilaiMesin)}</span><br>
+        <span><b>Total Pertanggungan:</b> ${formatRupiah(totalPertanggungan)}</span><br>
         <hr>
     `;
+
 
     // 6. Generate Tabel Premi Berdasarkan Opsi
     const opsi1_PAR = [{ name: "TSFWD", rate: rateTSFWD }, { name: "RSMDCC", rate: rateRSMDCC }, { name: "OTHERS", rate: rateOTHERS }];
@@ -301,13 +303,13 @@ function generateQuote() {
         // PAR, PAR (Exc. TSFWD), PAR + EQVET (Saya asumsikan ini PAR Standar, PAR Exc TSFWD, PAR + EQVET)
         html += `<h5>1. Opsi PAR</h5>` + calculatePremi(rateKebakaran, opsi1_PAR);
         html += `<hr class="my-4"><h5>2. Opsi PAR (Exc. TSFWD)</h5>` + calculatePremi(rateKebakaran, opsi2_PAR_TSFWD);
-        html += `<hr class="my-4"><h5>3. Opsi PAR + EQVET</h5>` + calculatePremi(rateKebakaran, opsi3_PAR_EQVET);
+        html += `<hr class="my-4"><h5 id="nextPage">3. Opsi PAR + EQVET</h5>` + calculatePremi(rateKebakaran, opsi3_PAR_EQVET);
         
     } else if (opsi === "2") {
         // FLEXAS, PAR, PAR (Exc. TSFWD), PAR + EQVET
         html += `<h5>1. Opsi FLEXAS Only</h5>` + calculatePremi(rateKebakaran, opsi4_FLEXAS);
         html += `<hr class="my-4"><h5>2. Opsi PAR</h5>` + calculatePremi(rateKebakaran, opsi1_PAR);
-        html += `<hr class="my-4"><h5>3. Opsi PAR (Exc. TSFWD)</h5>` + calculatePremi(rateKebakaran, opsi2_PAR_TSFWD);
+        html += `<hr class="my-4"><h5 id="nextPage">3. Opsi PAR (Exc. TSFWD)</h5>` + calculatePremi(rateKebakaran, opsi2_PAR_TSFWD);
         html += `<hr class="my-4"><h5>4. Opsi PAR + EQVET</h5>` + calculatePremi(rateKebakaran, opsi3_PAR_EQVET);
     }
 
@@ -357,7 +359,6 @@ function generateNoteProperti() {
 
 // Fungsi savePDF tidak berubah, karena menggunakan html2canvas dan jsPDF.
 async function savePDF() {
-    // ... (Logika savePDF yang sudah Anda berikan)
     if (!isGenerated) {
         const modalGenerate = new bootstrap.Modal(document.getElementById("modalBelumGenerate"));
         modalGenerate.show();
@@ -370,36 +371,72 @@ async function savePDF() {
         return;
     }
 
-    const {
-        jsPDF
-    } = window.jspdf;
+    const nextPageElement = document.getElementById("nextPage");
 
-    const canvas = await html2canvas(element, {
+    // Render full page
+    const fullCanvas = await html2canvas(element, {
         scale: 2,
         useCORS: true
     });
 
-    const imgData = canvas.toDataURL("image/png");
-
+    const { jsPDF } = window.jspdf;
     const pdf = new jsPDF("p", "pt", "a4");
 
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const imgWidth = pageWidth - 40; 
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const imgWidth = pageWidth - 40;
 
-    let heightLeft = imgHeight;
-    let position = 20;
+    // Jika TIDAK ada nextPage → gunakan default multipage
+    if (!nextPageElement) {
+        const imgHeight = (fullCanvas.height * imgWidth) / fullCanvas.width;
+        let heightLeft = imgHeight;
+        let position = 20;
 
-    pdf.addImage(imgData, "PNG", 20, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-        pdf.addPage();
-        position = heightLeft - imgHeight + 20;
-        pdf.addImage(imgData, "PNG", 20, position, imgWidth, imgHeight);
+        pdf.addImage(fullCanvas.toDataURL("image/png"), "PNG", 20, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+            pdf.addPage();
+            position = heightLeft - imgHeight + 20;
+            pdf.addImage(fullCanvas.toDataURL("image/png"), "PNG", 20, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+    } 
+    else {
+        // --- ADA nextPage → split canvas menjadi dua ---
+
+        // Posisi elemen nextPage terhadap awal #result
+        const rect = nextPageElement.getBoundingClientRect();
+        const elementOffsetTop = element.getBoundingClientRect().top;
+        const breakY = (rect.top - elementOffsetTop) * 2; // x2 karena scale:2
+
+        // --- Canvas HALAMAN 1 ---
+        const canvas1 = document.createElement("canvas");
+        canvas1.width = fullCanvas.width;
+        canvas1.height = breakY;
+
+        const ctx1 = canvas1.getContext("2d");
+        ctx1.drawImage(fullCanvas, 0, 0, fullCanvas.width, breakY, 0, 0, fullCanvas.width, breakY);
+
+        // --- Canvas HALAMAN 2 ---
+        const canvas2 = document.createElement("canvas");
+        canvas2.width = fullCanvas.width;
+        canvas2.height = fullCanvas.height - breakY;
+
+        const ctx2 = canvas2.getContext("2d");
+        ctx2.drawImage(fullCanvas, 0, -breakY);
+
+        // Convert ke PDF
+        const imgHeight1 = (canvas1.height * imgWidth) / canvas1.width;
+        const imgHeight2 = (canvas2.height * imgWidth) / canvas2.width;
+
+        // PAGE 1
+        pdf.addImage(canvas1.toDataURL("image/png"), "PNG", 20, 20, imgWidth, imgHeight1);
+
+        // PAGE 2
+        pdf.addPage();
+        pdf.addImage(canvas2.toDataURL("image/png"), "PNG", 20, 20, imgWidth, imgHeight2);
     }
 
     const tertanggung = document.getElementById("tertanggung").value || "Penawaran";
