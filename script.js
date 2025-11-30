@@ -428,11 +428,20 @@ function generateQuote() {
         // Get TPL
         const tpl = parseInt(document.getElementById("tpl").value || 0);
 
+        // Get jenisKendaraan
+        const jenisKendaraan = document.getElementById("jenisKendaraan").value;
+
+        // Set deductible, (Non Truck & Roda 2 = IDR 300.000, Selain itu IDR 500.000)
+        let deductible = 500000;
+        if (jenisKendaraan === "Non Truck" || jenisKendaraan === "Roda 2") {
+            deductible = 300000;
+        }
+
         return `
         <h3>Catatan Penting</h3>
         <div style="font-size:14px; line-height:1.5; margin-top:10px">
 
-            <b>Own Risk (OR)</b> untuk Comprehensive sebesar <b>Rp 300.000 / kejadian</b>.
+            <b>Own Risk (OR)</b> untuk Comprehensive sebesar <b>Rp ${deductible.toLocaleString()} / kejadian</b>.
             <br><br>
 
             <b>Penjelasan Jaminan:</b>
@@ -526,4 +535,35 @@ async function savePDF() {
 
     const tertanggung = document.getElementById("tertanggung").value || "Penawaran";
     pdf.save(`SmartQuote_${tertanggung.replace(/\s/g, '_')}.pdf`);
+}
+
+// Save as Image
+async function saveImage() {
+    if (!isGenerated) {
+        const modalGenerate = new bootstrap.Modal(document.getElementById("modalBelumGenerate"));
+        modalGenerate.show();
+        return;
+    }
+
+    const element = document.getElementById("result");
+    if (!element) {
+        alert("Tidak ada data untuk disimpan.");
+        return;
+    }
+    // Gunakan html2canvas untuk screenshot
+    const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    // Buat link untuk download
+    const link = document.createElement("a");
+    link.href = imgData;
+    const tertanggung = document.getElementById("tertanggung").value || "Penawaran";
+    link.download = `SmartQuote_${tertanggung.replace(/\s/g, '_')}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }

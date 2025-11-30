@@ -280,13 +280,13 @@ function generateQuote() {
         <img src="logo.png" alt="BCA Insurance" style="width:300px; margin-bottom:20px;">
         <h3>Estimasi Premi Properti</h3>
 
-        <span><b>Nama Tertanggung:</b> ${tertanggung}</span><br>
-        <span><b>Alamat Pertanggungan:</b> ${alamat}</span><br>
-        <span><b>Jenis Okupasi:</b> ${okupasiText} (Kode: ${okupasiCode})</span><br>
+        <span><b>Nama Tertanggung:</b> ${tertanggung}</span>
+        <span><b>Alamat Pertanggungan:</b> ${alamat}</span>
+        <span><b>Jenis Okupasi:</b> ${okupasiText} (Kode: ${okupasiCode})</span>
         <span><b>Konstruksi:</b> Konstruksi ${konstruksi}</span><br>
-        <span><b>Nilai Bangunan:</b> ${formatRupiah(nilaiBangunan)}</span><br>
-        <span><b>Nilai Content:</b> ${formatRupiah(nilaiContent)}</span><br>
-        <span><b>Nilai Stock:</b> ${formatRupiah(nilaiStock)}</span><br>
+        <span><b>Nilai Bangunan:</b> ${formatRupiah(nilaiBangunan)}</span>
+        <span><b>Nilai Content:</b> ${formatRupiah(nilaiContent)}</span>
+        <span><b>Nilai Stock:</b> ${formatRupiah(nilaiStock)}</span>
         <span><b>Nilai Mesin:</b> ${formatRupiah(nilaiMesin)}</span><br>
         <span><b>Total Pertanggungan:</b> ${formatRupiah(totalPertanggungan)}</span><br>
         <hr>
@@ -442,3 +442,32 @@ async function savePDF() {
     const tertanggung = document.getElementById("tertanggung").value || "Penawaran";
     pdf.save(`SmartQuote_${tertanggung.replace(/\s/g, '_')}.pdf`);
 }
+
+//Save as Image function
+async function saveImage() {
+    if (!isGenerated) {
+        const modalGenerate = new bootstrap.Modal(document.getElementById("modalBelumGenerate"));
+        modalGenerate.show();
+        return;
+    }
+    const element = document.getElementById("result");
+    if (!element) {
+        alert("Tidak ada data untuk disimpan.");
+        return;
+    }
+
+    const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true
+    });
+    const dataURL = canvas.toDataURL("image/png");
+    const tertanggung = document.getElementById("tertanggung").value || "Penawaran";
+
+    // Buat link untuk mengunduh gambar
+    const link = document.createElement("a");
+    link.href = dataURL;
+    link.download = `SmartQuote_${tertanggung.replace(/\s/g, '_')}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}   
